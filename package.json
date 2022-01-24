@@ -20,6 +20,7 @@
     "@auth0/auth0-spa-js": "^1.19.2",
     "@macfja/svelte-persistent-store": "^1.2.0",
     "@sveltejs/adapter-netlify": "^1.0.0-next.35",
-    "rollup-plugin-css-only": "^3.1.0"
+    "rollup-plugin-css-only": "^3.1.0",
+    "svelte-lazy": "^1.1.0"
   }
 }

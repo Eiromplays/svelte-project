@@ -4,6 +4,7 @@
   import auth from "../authService.js";
   import TaskItem from "../components/TaskItem.svelte";
   import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+  import Lazy from 'svelte-lazy';
 
   let auth0Client;
   let newTask;
@@ -71,49 +72,83 @@
     margin-top: 50px;
   }
 
-  .profile-picture {
-    width: 75px;
-    height: 75px;
+  .list-group {
+    display: flex;
+    gap: 0.5vh;
   }
 </style>
 
   <!-- App Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Task Manager</a>
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Container wrapper -->
+  <div class="container-fluid">
+    <!-- Toggle button -->
     <button
       class="navbar-toggler"
       type="button"
-      data-toggle="collapse"
-      data-target="#navbarText"
-      aria-controls="navbarText"
+      data-mdb-toggle="collapse"
+      data-mdb-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon" />
+      <i class="fas fa-bars"></i>
     </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <div class="navbar-nav mr-auto user-details">
+
+    <!-- Collapsible wrapper -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- Navbar brand -->
+      <a class="navbar-brand mt-2 mt-lg-0" href="/">
+        Eirik Svelte Project
+      </a>
+      <!-- Left links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
         </li>
-      </div>
-      <ul class="navbar-nav float-right">
-        {#if $isAuthenticated}
-        <li class="nav-item">
-          <img src={$user.picture} alt="User" class="rounded-circle profile-picture">
-          <span class="text-white ">&nbsp;&nbsp;{$user.name} ({$user.email})</span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/" on:click="{logout}">Log Out</a>
-        </li>
-        {:else}
-        <li class="nav-item">
-          <a class="nav-link" href="/" on:click="{login}">Log In</a>
-        </li>
-        {/if}
       </ul>
+      <!-- Left links -->
     </div>
-  </nav>
+    <!-- Collapsible wrapper -->
+
+    <!-- Right elements -->
+    <div class="d-flex align-items-center">
+      {#if $isAuthenticated}
+        <div class="dropdown">
+          <a
+            class="dropdown-toggle d-flex align-items-center hidden-arrow"
+            href="/"
+            id="navbarDropdownMenuAvatar"
+            role="button"
+            data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            <img
+              src={$user.picture}
+              class="rounded-circle"
+              height="25"
+              alt="User"
+              loading="lazy"
+            />
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="navbarDropdownMenuAvatar">
+            <li>
+              <a class="dropdown-item" href="/" on:click="{logout}">Logout</a>
+            </li>
+          </ul>
+        </div>
+      {:else}
+        <li class="nav-item">
+            <a class="nav-link" href="/" on:click="{login}">Log In</a>
+        </li>
+      {/if}
+    </div>
+    <!-- Right elements -->
+  </div>
+  <!-- Container wrapper -->
+</nav>
 
 <!-- Application -->
 {#if !$isAuthenticated}
@@ -140,28 +175,30 @@
   </div>
 </div>
 {:else}
-<div class="container" id="main-application">
-  <div class="row">
-    <div class="col-md-6">
-      <ul class="list-group">
-        {#each $user_tasks as item (item.id)}
-        <TaskItem task="{item}" /><br />
-        {/each}
-      </ul>
-    </div>
-    <div class="col-md-6">
-      <input
-        class="form-control"
-        bind:value="{newTask}"
-        placeholder="Enter New Task"
-      />
-      <br />
-      <button type="button" class="btn btn-primary" on:click="{addItem}">
-        Add Task
-      </button>
+<Lazy>
+  <div class="container" id="main-application">
+    <div class="row">
+      <div class="col-md-6">
+        <ul class="list-group">
+          {#each $user_tasks as item (item.id)}
+          <TaskItem task="{item}" /><br />
+          {/each}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <input
+          class="form-control"
+          bind:value="{newTask}"
+          placeholder="Enter New Task"
+        />
+        <br />
+        <button type="button" class="btn btn-primary" on:click="{addItem}">
+          Add Task
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</Lazy>
 {/if}
 
 <SvelteToast />
