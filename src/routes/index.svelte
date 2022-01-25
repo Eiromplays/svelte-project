@@ -26,7 +26,7 @@
 
   function addItem() {
     if (!newTask){
-      toast.push('<strong>Danger!</strong> <br />Task name needs to be set!', {
+      toast.push('<strong>Danger!</strong> <br />Task description needs to be set!', {
         theme: {
           '--toastBackground': '#F56565',
           '--toastBarBackground': '#C53030'
@@ -46,7 +46,7 @@
 
     tasks.set(updatedTasks);
 
-    toast.push(`<strong>Success!</strong> <br />Task ${newTask} added!`, {
+    toast.push(`<strong>Success!</strong> <br />Task <strong>${newTask}</strong> added!`, {
       theme: {
         '--toastBackground': 'green',
         '--toastColor': 'white',
@@ -70,11 +70,6 @@
 <style>
   #main-application {
     margin-top: 50px;
-  }
-
-  .list-group {
-    display: flex;
-    gap: 0.5vh;
   }
 </style>
 
@@ -129,7 +124,8 @@
               height="25"
               alt="User"
               loading="lazy"
-            />
+            />&nbsp;
+            {$user.name}
           </a>
           <ul
             class="dropdown-menu dropdown-menu-end"
@@ -175,14 +171,19 @@
   </div>
 </div>
 {:else}
-<Lazy>
+<Lazy height={1}>
   <div class="container" id="main-application">
     <div class="row">
       <div class="col-md-6">
         <ul class="list-group">
+          {#if ($user_tasks.length > 0)}
+            <li class="list-group-item show fade disabled">Your Tasks ({$user_tasks.length}):</li>
           {#each $user_tasks as item (item.id)}
-          <TaskItem task="{item}" /><br />
+            <Lazy height={300}><TaskItem task="{item}" /><br /></Lazy>
           {/each}
+          {:else}
+            <li class="list-group-item show fade disabled">No tasks available</li>
+          {/if}
         </ul>
       </div>
       <div class="col-md-6">

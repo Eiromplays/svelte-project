@@ -1,4 +1,5 @@
 <script>
+  import { SvelteToast, toast } from '@zerodevx/svelte-toast';
   import { tasks } from "../store.js";
   export let task = {};
 
@@ -28,7 +29,38 @@
   function editTask() {
     let updatedTasks = $tasks.map((currentTask) => {
       if (currentTask.id === task.id) {
+
+        if (!newTaskDescription){
+          toast.push('<strong>Danger!</strong> <br />Task description needs to be set!', {
+            theme: {
+              '--toastBackground': '#F56565',
+              '--toastBarBackground': '#C53030'
+            }
+          });
+          newTaskDescription = currentTask.description;
+          return currentTask;
+        }
+
+        if (currentTask.description === newTaskDescription){
+          toast.push('<strong>Danger!</strong> <br />Task description cannot be same as previous description!', {
+            theme: {
+              '--toastBackground': '#F56565',
+              '--toastBarBackground': '#C53030'
+            }
+          });
+
+          return currentTask;
+        }
+
         currentTask.description = newTaskDescription;
+
+        toast.push(`<strong>Success!</strong> <br />Task <strong>${newTaskDescription}</strong> updated!`, {
+          theme: {
+            '--toastBackground': 'green',
+            '--toastColor': 'white',
+            '--toastBarBackground': 'olive'
+          }
+        });
         return currentTask;
       }
       return currentTask;
@@ -43,27 +75,35 @@
     color: red;
     text-decoration: line-through;
   }
+
+  .form-check-input{
+    margin-top: 13.5px !important;
+  }
 </style>
 
 <main>
   <li class="list-group-item">
     <input
+          class="form-control"
+          class:completed={task.completed} 
+          disabled={task.completed}
+          bind:value="{newTaskDescription}"
+          placeholder="Task Description"
+    />
+    <input
       type="checkbox"
       class="form-check-input"
-      id="exampleCheck1"
+      id="task-is-completed"
       bind:checked={isChecked}
       on:change={(e) => taskDone(e)} />
-    <input type="text" bind:value={newTaskDescription} class:completed={task.completed} disabled={task.completed} />
-    <br />
     <input
       type="button"
-      class="form-check-input"
+      class="btn btn-danger m-1"
       value="Delete"
       on:click={(e) => removeTask(e)} />
-      <br />
-      <input
+    <input
       type="button"
-      class="form-check-input"
+      class="btn btn-success m-1"
       value="Edit"
       on:click={(e) => editTask(e)} />
   </li>
