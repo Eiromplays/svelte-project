@@ -84,11 +84,11 @@
 <main>
   <li class="list-group-item">
     <input
-          class="form-control"
-          class:completed={task.completed} 
-          disabled={task.completed}
-          bind:value="{newTaskDescription}"
-          placeholder="Task Description"
+        class="form-control"
+        class:completed={task.completed} 
+        disabled={task.completed}
+        bind:value="{newTaskDescription}"
+        placeholder="Task Description"
     />
     <input
       type="checkbox"
@@ -101,10 +101,13 @@
       class="btn btn-danger m-1"
       value="Delete"
       on:click={(e) => removeTask(e)} />
-    <input
-      type="button"
-      class="btn btn-success m-1"
-      value="Edit"
-      on:click={(e) => editTask(e)} />
+
+    {#if (!isChecked && newTaskDescription !== task.description)}
+        <input
+        type="button"
+        class="btn btn-success m-1"
+        value="Edit"
+        on:click={(e) => editTask(e)} />
+    {/if}
   </li>
 </main>

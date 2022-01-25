@@ -65,11 +65,33 @@
       result += chars[Math.round(Math.random() * (chars.length - 1))];
     return result;
   }
+
+  function settings(){
+    toast.push('<strong>404!</strong> <br />Settings not found!', {
+        theme: {
+          '--toastBackground': '#F56565',
+          '--toastBarBackground': '#C53030'
+        }
+    });
+  }
 </script>
 
 <style>
   #main-application {
     margin-top: 50px;
+  }
+
+  .list-group{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .list-group{
+      flex-direction: column;
+    }
   }
 </style>
 
@@ -131,14 +153,17 @@
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="navbarDropdownMenuAvatar">
             <li>
+              <a class="dropdown-item" href="/" on:click="{settings}">Settings</a>
+            </li>
+            <li>
               <a class="dropdown-item" href="/" on:click="{logout}">Logout</a>
             </li>
           </ul>
         </div>
       {:else}
-        <li class="nav-item">
-            <a class="nav-link" href="/" on:click="{login}">Log In</a>
-        </li>
+        <button type="button" class="btn btn-link px-3 me-2" on:click="{login}">
+          Login
+        </button>
       {/if}
     </div>
     <!-- Right elements -->
@@ -174,10 +199,13 @@
 <Lazy height={1}>
   <div class="container" id="main-application">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 text-center">
+        {#if ($user_tasks.length > 0)}
+            <h4>Your Tasks ({$user_tasks.length}):</h4>
+            <h6>Completed tasks ({$user_tasks.filter(task => task.completed).length})</h6>
+          {/if}
         <ul class="list-group">
           {#if ($user_tasks.length > 0)}
-            <li class="list-group-item show fade disabled">Your Tasks ({$user_tasks.length}):</li>
           {#each $user_tasks as item (item.id)}
             <Lazy height={300}><TaskItem task="{item}" /><br /></Lazy>
           {/each}
