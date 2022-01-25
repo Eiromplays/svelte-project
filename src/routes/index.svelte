@@ -67,7 +67,7 @@
   }
 
   function settings(){
-    toast.push('<strong>404!</strong> <br />Settings not found!', {
+    toast.push('<strong>404 📛!</strong> <br />Settings not found 😅', {
         theme: {
           '--toastBackground': '#F56565',
           '--toastBarBackground': '#C53030'
